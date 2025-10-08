@@ -4,7 +4,7 @@ import (
 	x_app "go-fiber-template/internal/app"
 	"go-fiber-template/internal/auth"
 	"go-fiber-template/internal/docs"
-	"go-fiber-template/internal/product"
+	"go-fiber-template/internal/schedule"
 	"go-fiber-template/internal/user"
 	"go-fiber-template/lib/common"
 
@@ -17,6 +17,6 @@ func registerRoutes(app *fiber.App) {
 	docs.NewHttpHandler(api.Group("/docs"))
 	auth.NewHttpHandler(api.Group("/auth"), authService)
 	user.NewHttpHandler(api.Group("/users"), userService)
-	product.NewHttpHandler(api.Group("/products"), productService)
+	schedule.NewHttpHandler(api.Group("/schedules"), scheduleService)
 	app.Use(common.NotFoundHandler)
 }

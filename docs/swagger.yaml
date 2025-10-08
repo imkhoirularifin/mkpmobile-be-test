@@ -2,6 +2,34 @@ basePath: /api/v1
 consumes:
 - application/json
 definitions:
+  dto.CreateScheduleRequest:
+    properties:
+      available_seats:
+        minimum: 0
+        type: integer
+      movie_title:
+        maxLength: 255
+        minLength: 1
+        type: string
+      price:
+        minimum: 0
+        type: number
+      show_date:
+        type: string
+      show_time:
+        type: string
+      studio_name:
+        maxLength: 100
+        minLength: 1
+        type: string
+    required:
+    - available_seats
+    - movie_title
+    - price
+    - show_date
+    - show_time
+    - studio_name
+    type: object
   dto.ErrorValidationDto:
     properties:
       field:
@@ -56,6 +84,48 @@ definitions:
           $ref: '#/definitions/dto.ErrorValidationDto'
         type: array
       message:
+        type: string
+    type: object
+  dto.ScheduleDto:
+    properties:
+      available_seats:
+        type: integer
+      created_at:
+        type: string
+      id:
+        type: integer
+      movie_title:
+        type: string
+      price:
+        type: number
+      show_date:
+        type: string
+      show_time:
+        type: string
+      studio_name:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  dto.UpdateScheduleRequest:
+    properties:
+      available_seats:
+        minimum: 0
+        type: integer
+      movie_title:
+        maxLength: 255
+        minLength: 1
+        type: string
+      price:
+        minimum: 0
+        type: number
+      show_date:
+        type: string
+      show_time:
+        type: string
+      studio_name:
+        maxLength: 100
+        minLength: 1
         type: string
     type: object
   dto.UserDto:
@@ -170,6 +240,197 @@ paths:
       summary: Ping
       tags:
       - App
+  /schedules:
+    get:
+      consumes:
+      - application/json
+      description: Get all movie schedules
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/dto.ResponseDto'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/dto.ScheduleDto'
+                  type: array
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ResponseDto'
+      summary: Get all schedules
+      tags:
+      - Schedule
+    post:
+      consumes:
+      - application/json
+      description: Create a new movie schedule
+      parameters:
+      - description: Schedule creation request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateScheduleRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+            - $ref: '#/definitions/dto.ResponseDto'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.ScheduleDto'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ResponseDto'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ResponseDto'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ResponseDto'
+      security:
+      - Bearer: []
+      summary: Create a new schedule
+      tags:
+      - Schedule
+  /schedules/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a movie schedule by ID
+      parameters:
+      - description: Schedule ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.ResponseDto'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ResponseDto'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ResponseDto'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/dto.ResponseDto'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ResponseDto'
+      security:
+      - Bearer: []
+      summary: Delete schedule
+      tags:
+      - Schedule
+    get:
+      consumes:
+      - application/json
+      description: Get a movie schedule by ID
+      parameters:
+      - description: Schedule ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/dto.ResponseDto'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.ScheduleDto'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ResponseDto'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/dto.ResponseDto'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ResponseDto'
+      summary: Get schedule by ID
+      tags:
+      - Schedule
+    put:
+      consumes:
+      - application/json
+      description: Update a movie schedule by ID
+      parameters:
+      - description: Schedule ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Schedule update request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateScheduleRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/dto.ResponseDto'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.ScheduleDto'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ResponseDto'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ResponseDto'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/dto.ResponseDto'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ResponseDto'
+      security:
+      - Bearer: []
+      summary: Update schedule
+      tags:
+      - Schedule
   /users/{id}:
     get:
       consumes:
@@ -210,27 +471,6 @@ paths:
       summary: Find user by ID
       tags:
       - User
-  /welcome:
-    get:
-      consumes:
-      - application/json
-      description: Get welcome message
-      parameters:
-      - description: Language code for localization
-        in: header
-        name: Accept-Language
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/dto.ResponseDto'
-      summary: Welcome
-      tags:
-      - App
 produces:
 - application/json
 schemes:
